@@ -1,0 +1,6 @@
+com\xtw\domain\AdvertBo.class
+com\xtw\common\PageInfo.class
+com\xtw\common\BaseBo.class
+com\xtw\domain\UserBo.class
+com\xtw\common\Constants.class
+com\xtw\service\UserService.class

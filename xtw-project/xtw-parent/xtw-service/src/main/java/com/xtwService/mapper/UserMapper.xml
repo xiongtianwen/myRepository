@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xtwService.mapper.UserMapper">
+    <resultMap id="UserBo_resultMap" type="com.xtw.domain.UserBo">
+        <result property="id" column="id"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="userName" column="userName"/>
+        <result property="telephone" column="telephone"/>
+        <result property="email" column="email"/>
+        <result property="qq" column="qq"/>
+        <result property="wechat" column="wechat"/>
+        <result property="address" column="address"/>
+    </resultMap>
+    <sql id="common_column">
+        id,age,sex,userName,telephone,email,qq,wechat,address
+    </sql>
+    <!--公共查询条件-->
+    <sql id="common_condition">
+        <where>
+            <!--区间查询年龄范围-->
+            <if test="ageStart != null and ageStart != '' and ageStart != 0">
+                and  age &gt;= #{ageStart,jdbcType=VARCHAR}
+            </if>
+            <if test="ageEnd != null and ageEnd != '' and ageEnd != 0">
+                and  age &lt;= #{ageEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="sex != null and sex != ''">
+                and  sex = #{sex,jdbcType=VARCHAR}
+            </if>
+            <if test="userName != null and userName != ''">
+                and  userName like concat("%",#{userName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="telephone != null and telephone != ''">
+                and  telephone like concat("%",#{telephone,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="email != null and email != ''">
+                and  email like concat("%",#{email,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="qq != null and qq != ''">
+                and  qq like concat("%",#{qq,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="wechat != null and wechat != ''">
+                and  wechat like concat("%",#{wechat,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="address != null and address != ''">
+                and  address like concat("%",#{address,jdbcType=VARCHAR},"%")
+            </if>
+        </where>
+    </sql>
+
+    <!--查询信息记录数-->
+    <select id="queryCount" parameterType="com.xtw.domain.UserBo" resultType="java.lang.Long">
+        select count(0) from  user <include refid="common_condition"/>
+    </select>
+
+    <!--查询用户表-->
+    <select id="queryList" parameterType="com.xtw.domain.UserBo" resultType="com.xtw.domain.UserBo">
+        select <include refid="common_column"/>
+        from user <include refid="common_condition"/>
+    </select>
+
+    <!--查询用户个人信息-->
+    <select id="queryUserObj" parameterType="java.lang.Integer" resultType="com.xtw.domain.UserBo">
+        select <include refid="common_column"/>
+        from user where id =#{id,jdbcType=NUMERIC}
+    </select>
+
+    <!--修改用户个人信息-->
+    <update id="updateUserInfo" parameterType="com.xtw.domain.UserBo" >
+        update user
+        <set>
+            <if test="age != null and age != '' and age != 0">
+                age = #{age,jabcType=VARCHAR},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex,jabcType=VARCHAR},
+            </if>
+            <if test="userName != null and userName != ''">
+                userName = #{userName,jabcType=VARCHAR},
+            </if>
+            <if test="telephone != null and telephone != ''">
+                telephone = #{telephone,jabcType=VARCHAR},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email,jabcType=VARCHAR},
+            </if>
+            <if test="qq != null and qq != ''">
+                qq = #{qq,jabcType=VARCHAR},
+            </if>
+            <if test="wechat != null and wechat != ''">
+                wechat = #{wechat,jabcType=VARCHAR},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address,jabcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
+
+    <!--删除用户信息-->
+    <update id="deleteUser" parameterType="java.lang.Integer">
+        delete from user where id = #{id,jdbcType=NUMERIC}
+    </update>
+</mapper>

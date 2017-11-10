@@ -1,0 +1,78 @@
+<div class="tm-header" th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid">
+        <div class="tm-header-inner">
+            <a href="#" class="navbar-brand tm-site-name">Classic</a>
+            <!--<div th:if="${session.userName}!=null ||${session.userName}!=''">
+                HELLO GUEST WELCOME TO ${session.userName}'S PEOSONAL WENSITE
+            </div>-->
+            <!-- navbar -->
+            <nav class="navbar tm-main-nav">
+
+                <button class="navbar-toggler hidden-md-up" type="button" data-toggle="collapse" data-target="#tmNavbar">
+                    &#9776;
+                </button>
+
+                <div class="collapse navbar-toggleable-sm" id="tmNavbar" th:switch="${headerFlag}">
+                    <ul class="nav navbar-nav" th:case="index">
+                        <li class="nav-item active" >
+                            <a th:href="@{/index}" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/about}" class="nav-link">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/blog}" class="nav-link">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/contact}" class="nav-link">Contact</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav" th:case="about">
+                        <li class="nav-item" >
+                            <a th:href="@{/index}" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item  active">
+                            <a th:href="@{/about}" class="nav-link">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/blog}" class="nav-link">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/contact}" class="nav-link">Contact</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav" th:case="blog">
+                        <li class="nav-item" >
+                            <a th:href="@{/index}" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/about}" class="nav-link">About</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a th:href="@{/blog}" class="nav-link">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/contact}" class="nav-link">Contact</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav" th:case="contact">
+                        <li class="nav-item" >
+                            <a th:href="@{/index}" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/about}" class="nav-link">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/blog}" class="nav-link">Blog</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a th:href="@{/contact}" class="nav-link">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+
+        </div>
+    </div>
+</div>

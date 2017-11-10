@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="xtw-web:war">
+    <output-path>$PROJECT_DIR$/xtw-web/target</output-path>
+    <root id="archive" name="xtw-web.war">
+      <element id="artifact" artifact-name="xtw-web:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://code.alibabatech.com/schema/dubbo
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
+    <!-- 提供方应用信息，用于计算依赖关系 -->
+    <dubbo:application name="provider"/>
+
+    <!-- 使用multicast广播注册中心暴露服务地址 -->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+
+
+    <!-- 延迟到Spring初始化完成后，再暴露服务,服务调用超时设置为120秒,超时重试1次,负载均衡采用-->
+    <!--负载均衡采用：leastActive:最少活跃调用数，相同活跃数的随机，活跃数指调用前后计数差，使慢的机器收到更少请求-->
+    <dubbo:provider delay="-1" timeout="10000000" retries="1" loadbalance="leastactive"/>
+
+    <!--扫描的方式-->
+    <dubbo:annotation package="com.alibaba.dubbo.*" />
+    <dubbo:annotation package="com.xtw.*" />
+    <dubbo:consumer check="true" />
+    <!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
+
+    <bean id="usrServiceImpl" class="com.xtwService.serviceImp.UserServiceImpl"></bean>
+    <dubbo:service interface="com.xtw.service.UserService" ref="usrServiceImpl" timeout="3000"></dubbo:service>
+</beans>

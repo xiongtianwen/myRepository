@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/xtw-api/xtw-api.iml" filepath="$PROJECT_DIR$/xtw-api/xtw-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xtw-parent.iml" filepath="$PROJECT_DIR$/xtw-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xtw-service/xtw-service.iml" filepath="$PROJECT_DIR$/xtw-service/xtw-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xtw-web/xtw-web.iml" filepath="$PROJECT_DIR$/xtw-web/xtw-web.iml" />
+    </modules>
+  </component>
+</project>
