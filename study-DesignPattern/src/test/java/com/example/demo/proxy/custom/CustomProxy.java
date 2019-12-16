@@ -7,19 +7,24 @@ import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URL;
 
 public class CustomProxy {
 
     public static final String ln = "\n";
 
     public static Object newProxyInstance(CustomClassLoader loader,Class<?>[] interfaces,CustomInvocationHandler h){
+        try {
         //1、动态生成.java
         String src = generateSrc(interfaces);
         //2、将.java文件输出到磁盘
 //        String javaPath = "C:/Users/Administrator/Desktop/$proxy0.java";
-        String javaPath ="D:/work/java/IdeaProjects/demo/src/test/java/com/example/demo/proxy/custom/$proxy0.java";
-        File f = new File(javaPath);
-        try {
+//        String javaPath = "D:/work/java/IdeaProjects/demo/src/test/java/com/example/demo/proxy/custom/$proxy0.java";
+//        String javaPath = "E:/学习/JAVA/project/myProject/myRepository/study-DesignPattern/target/test-classes/com/example/demo/proxy/custom/$proxy0.java";
+            URL url = CustomProxy.class.getResource("");
+            String javaPath = new File(url.toURI()).getAbsolutePath() +"/$proxy0.java";
+//            javaPath = URLDecoder.decode(javaPath, "UTF-8");//过滤中文
+            File f = new File(javaPath);
             FileWriter fw = new FileWriter(f);
             fw.write(src);
             fw.flush();
