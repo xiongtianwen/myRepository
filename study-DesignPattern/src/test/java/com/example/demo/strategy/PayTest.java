@@ -1,4 +1,6 @@
-package com.example.demo.strategy.payment;
+package com.example.demo.strategy;
+
+import com.example.demo.strategy.payment.*;
 
 public class PayTest {
     public static void main(String[] args) {
