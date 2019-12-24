@@ -20,7 +20,7 @@ public class EventListener {
 //        e.setTime(System.currentTimeMillis());
         try {
             //执行事件的回调函数
-            e.getCallback().invoke(e.getTarget());
+            e.getCallback().invoke(e.getTarget(),this);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
