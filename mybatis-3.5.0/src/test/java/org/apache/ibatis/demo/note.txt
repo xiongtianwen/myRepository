@@ -1,0 +1,17 @@
+//sqlsession.getMapper():
+org.apache.ibatis.session.SqlSession#getMapper
+	->org.apache.ibatis.session.Configuration#getMapper
+		->org.apache.ibatis.binding.MapperRegistry#getMapper
+			->org.apache.ibatis.binding.MapperProxyFactory#newInstance
+				->org.apache.ibatis.binding.MapperProxyFactory#newInstance //MapperProxy.clas继承invocationHandler将mapper注册到MapperProxy.class中
+					->java.lang.reflect.Proxy#newProxyInstance
+
+//userMapper.selectByPrimaryKey();
+org.apache.ibatis.demo.UserMapper#selectByPrimaryKey
+	->org.apache.ibatis.binding.MapperProxy#invoke	//被动态代理拦截，进入MapperProxy.class的invoke()方法
+		->org.apache.ibatis.binding.MapperMethod#execute
+			->org.apache.ibatis.session.SqlSession#selectOne
+				->org.apache.ibatis.session.defaults.DefaultSqlSession#selectList
+					->org.apache.ibatis.session.defaults.DefaultSqlSession#selectList
+						->org.apache.ibatis.executor.Executor#query
+
