@@ -14,4 +14,20 @@ org.apache.ibatis.demo.UserMapper#selectByPrimaryKey
 				->org.apache.ibatis.session.defaults.DefaultSqlSession#selectList
 					->org.apache.ibatis.session.defaults.DefaultSqlSession#selectList
 						->org.apache.ibatis.executor.Executor#query
+                            ->org.apache.ibatis.plugin.Plugin.invoke //这里用到了动态代理
+
+//mybatis中的plugin实现机制
+org.apache.ibatis.plugin.Plugin#wrap //在wrap方法中实现动态代理
+
+//加载plugin的过程
+org.apache.ibatis.session.SqlSessionFactoryBuilder#build
+	->org.apache.ibatis.builder.xml.XMLConfigBuilder#parse
+		->org.apache.ibatis.builder.xml.XMLConfigBuilder#parseConfiguration
+			->org.apache.ibatis.builder.xml.XMLConfigBuilder#pluginElement
+				->org.apache.ibatis.session.Configuration#addInterceptor
+					->org.apache.ibatis.plugin.InterceptorChain#addInterceptor //interceptors.add(interceptor);
+						->org.apache.ibatis.plugin.InterceptorChain#pluginAll //遍历interceptors调用interceptor.plugin()方法
+							->org.apache.ibatis.plugin.Interceptor#plugin
+								->org.apache.ibatis.plugin.Plugin#wrap	//这里注册动态代理
+									->java.lang.reflect.Proxy#newProxyInstance
 
