@@ -1,6 +1,5 @@
-package com.example.demo.template;
+package com.example.demo.template.examination;
 
-import com.example.demo.template.examination.Student;
 
 public class ExamTest {
     public static void main(String[] args) {
