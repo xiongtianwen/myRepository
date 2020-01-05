@@ -1,4 +1,4 @@
-package org.apache.ibatis.demo.HandwritingMybatisV1;
+package org.apache.ibatis.demo.handWritingMybatis.v1;
 
 import org.apache.ibatis.demo.UserDto;
 

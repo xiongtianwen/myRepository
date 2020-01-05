@@ -1,4 +1,4 @@
-package org.apache.ibatis.demo.HandwritingMybatisV1;
+package org.apache.ibatis.demo.handWritingMybatis.v1;
 
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ public class HwConfiguration {
     }
 
     static class UserMapperXml{
-        public static final String namespace = "org.apache.ibatis.demo.HandwritingMybatisV1.HwUserMapper";
+        public static final String namespace = "org.apache.ibatis.demo.handWritingMybatis.v1.HwUserMapper";
         public static final String sql = "select * from user where id = %s";
         public static Map<String,String> sqlMap = new HashMap<>();
         static{

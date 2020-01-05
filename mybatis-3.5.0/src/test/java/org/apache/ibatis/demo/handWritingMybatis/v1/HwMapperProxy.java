@@ -1,4 +1,4 @@
-package org.apache.ibatis.demo.HandwritingMybatisV1;
+package org.apache.ibatis.demo.handWritingMybatis.v1;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
