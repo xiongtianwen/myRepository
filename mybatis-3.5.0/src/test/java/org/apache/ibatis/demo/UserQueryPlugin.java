@@ -21,7 +21,7 @@ public class UserQueryPlugin implements Interceptor {
         //implement pre-processing if needed
         MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
         BoundSql boundSql = mappedStatement.getBoundSql(invocation.getArgs()[1]);
-        System.out.println(String.format("UserPugin print sql:【%s】,param:【%s】",boundSql.getSql(),boundSql.getParameterObject()));
+        System.out.println(String.format("UserPlugin print sql:【%s】,param:【%s】",boundSql.getSql(),boundSql.getParameterObject()));
         Object result = invocation.proceed();
         //implement post-processing if needed
         return result;

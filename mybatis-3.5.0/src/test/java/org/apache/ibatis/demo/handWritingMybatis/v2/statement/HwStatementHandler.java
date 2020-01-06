@@ -16,8 +16,9 @@ public class HwStatementHandler {
         ResultSet rs = null;
         try {
             //1.加载类驱动
-            Class.forName(Environment.getDriver());
-            conn = DriverManager.getConnection(Environment.getUrl(), Environment.getUser(), Environment.getPassword());
+            Environment environment = new Environment();
+            Class.forName(environment.getDriver());
+            conn = DriverManager.getConnection(environment.getUrl(), environment.getUser(), environment.getPassword());
             if (!conn.isClosed())
                 System.out.println("succeeded connection to the database");
             //2.创建statement类对象，用来执行SQL语句
