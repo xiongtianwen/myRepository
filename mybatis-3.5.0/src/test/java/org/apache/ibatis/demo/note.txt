@@ -15,6 +15,9 @@ org.apache.ibatis.demo.UserMapper#selectByPrimaryKey
 					->org.apache.ibatis.session.defaults.DefaultSqlSession#selectList
 						->org.apache.ibatis.executor.Executor#query
                             ->org.apache.ibatis.plugin.Plugin.invoke //这里用到了动态代理
+                               ->org.apache.ibatis.plugin.Interceptor#intercept
+                                   ->org.apache.ibatis.plugin.Invocation#proceed
+                                        ->java.lang.reflect.Method#invoke
 
 //mybatis中的plugin实现机制
 org.apache.ibatis.plugin.Plugin#wrap //在wrap方法中实现动态代理
