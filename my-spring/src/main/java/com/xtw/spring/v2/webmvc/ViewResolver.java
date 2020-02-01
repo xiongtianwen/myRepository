@@ -53,7 +53,6 @@ public class ViewResolver {
 
     private Matcher matcher(String str){
         String regex = "\\$\\{(.+?)\\}";
-//        String regex = "$\\{[^\\}]+\\}";
         Pattern pattern = Pattern.compile(regex,Pattern.CASE_INSENSITIVE);
         return pattern.matcher(str);
     }
