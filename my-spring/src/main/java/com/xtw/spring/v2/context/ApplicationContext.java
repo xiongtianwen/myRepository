@@ -13,14 +13,15 @@ import com.xtw.spring.v2.core.BeanFactory;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ApplicationContext  extends BeanFactory {
 
     private String[] configLocations;
-    private List<String> scanBeanClass;
     private Map<String,BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
     private Map<String,BeanDefinition> beanCacheMap = new ConcurrentHashMap<>();
+    private BeanDefinitionReader reader;
     //存储所有被代理的对象
     private Map<String,BeanWrapper> beanWrapperMap = new ConcurrentHashMap<>();
 
@@ -31,17 +32,17 @@ public class ApplicationContext  extends BeanFactory {
 
     private void refresh(){
         //1、定位
-        BeanDefinitionReader reader = new BeanDefinitionReader(configLocations);
+        reader = new BeanDefinitionReader(configLocations);
         //2、加载
         reader.loadBeanDefinition();
-        this.scanBeanClass = reader.getRegistryBeanClassNames();
+        List<String> scanBeanClass = reader.getRegistryBeanClassNames();
         //3、注册
-        doRegister();
+        doRegister(scanBeanClass);
         //4、依赖注入
         doAutowired();
         //手动调用
-        UserController userController = (UserController)beanWrapperMap.get("userController").getWrapperInstance();
-        userController.query();
+//        UserController userController = (UserController)beanWrapperMap.get("userController").getWrapperInstance();
+//        userController.query(null,null,null);
     }
 
     private void doAutowired() {
@@ -56,7 +57,7 @@ public class ApplicationContext  extends BeanFactory {
         }
     }
 
-    private void doRegister() {
+    private void doRegister(List<String> scanBeanClass) {
         for(String className : scanBeanClass){
             try {
                 //beanName有三种情况
@@ -82,14 +83,11 @@ public class ApplicationContext  extends BeanFactory {
     }
 
     //每注册一个className，就返回一个BeanDefinition
-    public BeanDefinition registerBeanDefinitions(String className){
-        if(this.scanBeanClass.contains(className)){
-            BeanDefinition beanDefinition = new BeanDefinition();
-            beanDefinition.setBeanClassName(className);
-            beanDefinition.setFactoryBeanName(lowerCaseFirstOne(className.substring(className.lastIndexOf(".")+1)));
-            return beanDefinition;
-        }
-        return null;
+    private BeanDefinition registerBeanDefinitions(String className){
+           BeanDefinition beanDefinition = new BeanDefinition();
+           beanDefinition.setBeanClassName(className);
+           beanDefinition.setFactoryBeanName(lowerCaseFirstOne(className.substring(className.lastIndexOf(".")+1)));
+           return beanDefinition;
     }
 
     private void doCreateBeanWrapperInstance() {
@@ -176,6 +174,17 @@ public class ApplicationContext  extends BeanFactory {
                 }
             }catch (Exception e){e.printStackTrace();}
         }
+    }
+
+
+    //获取所有beanName,返回String[]
+    public String[] getBeanDefinitionNames(){
+        return this.beanDefinitionMap.keySet().toArray(new String[this.beanDefinitionMap.size()]);
+    }
+
+    //获取配置文件信息
+    public Properties getConfig(){
+        return reader.getConfig();
     }
 
     //首字母转为小写

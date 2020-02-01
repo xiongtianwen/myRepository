@@ -45,7 +45,7 @@ public class DispatcherServlet extends HttpServlet {
 
         //手动调用
         UserController userController = (UserController)beanDefinitionMap.get("userController");
-        userController.query();
+        userController.simpleQuery();
 
         //如果是MVC会多设计一个HandlerMapping
         //将@RequestMapping中配置的Url和一个Method关联上，以便于从浏览器获取用户输入的Url以后能够找到具体执行 的Method通过反射去调用
@@ -78,7 +78,7 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
-        private void doRegister() {
+    private void doRegister() {
         if(classNames.isEmpty()){
             return;
         }
