@@ -116,11 +116,9 @@ public class DispatcherServlet extends HttpServlet {
         //因为后面调用的时候,传的形参是一个数组
         //可以通过记录这些参数的位置index,挨个从参数中取值,这样就和参数顺序无关了
 
-        //每一个参数有一个列表,这里保存的是形参列表(参数的value,参数的index)
-        Map<String,Integer> paramMap = new HashMap<>();
-
-
         for(HandlerMapping handlerMapping : handlerMappings){
+            //每一个参数有一个列表,这里保存的是形参列表(参数的value,参数的index)
+            Map<String,Integer> paramMap = new HashMap<>();
             //这里只是处理命名参数(有注解的参数)
             Annotation[][] pa = handlerMapping.getMethod().getParameterAnnotations();
             for(int i = 0; i < pa.length; i++){

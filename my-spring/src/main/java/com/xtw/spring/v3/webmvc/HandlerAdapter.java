@@ -3,6 +3,7 @@ package com.xtw.spring.v3.webmvc;
 import com.xtw.spring.demo.CommonInterface;
 import com.xtw.spring.demo.UserController;
 import com.xtw.spring.v2.webmvc.ModelAndView;
+import com.xtw.spring.v3.aop.AopProxy;
 import com.xtw.spring.v3.aop.AopProxyUtil;
 import com.xtw.spring.v3.core.BeanFactory;
 
@@ -14,12 +15,15 @@ import java.util.Map;
 
 public class HandlerAdapter  {
     private Map<String,Integer> paramMap;
+    private AopProxy aopProxy;
 
-    public HandlerAdapter(Map<String,Integer> paramMap) {
+
+    public HandlerAdapter(Map<String,Integer> paramMap,AopProxy aopProxy) {
         this.paramMap = paramMap;
+        this.aopProxy = aopProxy;
     }
 
-    public ModelAndView handle(HttpServletRequest req, HttpServletResponse resp, HandlerMapping handler) throws Exception{
+    public ModelAndView handle(HttpServletRequest req, HttpServletResponse resp, HandlerMapping handler) throws Throwable{
         //根据用户请求的参数信息,跟method中的参数进行动态匹配
         //resp传进来是为了将其赋值给方法参数
 
@@ -39,7 +43,7 @@ public class HandlerAdapter  {
             paramValues[index] = transformationStringValue(value,parameterTypes[index]);
         }
 
-        if(paramMap.containsKey(HttpServletRequest.class.getName())){
+            if(paramMap.containsKey(HttpServletRequest.class.getName())){
             int reqIndex = paramMap.get(HttpServletRequest.class.getName());
             paramValues[reqIndex] = req;
         }
@@ -48,13 +52,8 @@ public class HandlerAdapter  {
             paramValues[respIndex] = resp;
         }
 
-        //4、从handler中取出controller和method,然后利用反射机制进行调用
-        CommonInterface obj = (CommonInterface)handler.getController();
-        //todo 这里目前没办法用反射完成，只能写死
-        Object result = obj.query(req,resp,(String)paramValues[2],(String)paramValues[3]);
-        //todo 下面这行代码会报错,虽然把obj对象强转成了CommonInterface
-        // 但是obj.getClass()得到的还是代理对象($proxy0这样的),用反射调用被代理的类的方法,传入的却是代理类
-//        Object result = handler.getMethod().invoke(obj,paramValues);
+       //这里无法通过反射自动调用代理类的invoke方法,只能手动调用代理类的proceed方法,让其去调用invoke方法
+        Object result = aopProxy.proceed(handler.getController(),handler.getMethod(),paramValues);
         if(result == null){ return null;}
         if(ModelAndView.class == result.getClass()){
             return (ModelAndView)result;

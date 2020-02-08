@@ -43,6 +43,10 @@ public class BeanWrapper extends FactoryBean {
         this.originalInstance = instance;
     }
 
+    public AopProxy getAopProxy() {
+        return aopProxy;
+    }
+
     public void setAopConfig(AopProxyConfig aopConfig){
         this.aopProxy.setConfig(aopConfig);
     }

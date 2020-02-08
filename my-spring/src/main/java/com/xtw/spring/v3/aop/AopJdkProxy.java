@@ -43,4 +43,9 @@ public class AopJdkProxy implements AopProxy,InvocationHandler {
     public void setConfig(AopProxyConfig aopConfig) {
         this.aopProxyConfig = aopConfig;
     }
+
+    @Override
+    public Object proceed(Object proxy, Method method, Object[] args) throws Throwable {
+        return invoke(proxy, method, args);
+    }
 }

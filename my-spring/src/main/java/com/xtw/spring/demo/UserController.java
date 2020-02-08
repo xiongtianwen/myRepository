@@ -32,6 +32,7 @@ public class UserController implements CommonInterface {
         model.put("name",name);
         model.put("id",id);
         ModelAndView mv = new ModelAndView("index.html",model);
+        System.out.println("invoke queryWithParameter method");
         return mv;
     }
 

@@ -5,8 +5,6 @@ import com.xtw.spring.annotation.Controller;
 import com.xtw.spring.annotation.Service;
 import com.xtw.spring.v3.aop.AopProxy;
 import com.xtw.spring.v3.aop.AopProxyConfig;
-import com.xtw.spring.v3.aop.AopProxyFactory;
-import com.xtw.spring.v3.aop.AopProxyStrategy;
 import com.xtw.spring.v3.beans.BeanDefinition;
 import com.xtw.spring.v3.beans.BeanPostProcessor;
 import com.xtw.spring.v3.beans.BeanWrapper;
@@ -15,11 +13,11 @@ import com.xtw.spring.v3.core.BeanFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ApplicationContext extends DefaultListableBeanFactory  implements BeanFactory {
@@ -30,6 +28,8 @@ public class ApplicationContext extends DefaultListableBeanFactory  implements B
     private BeanDefinitionReader reader;
     //存储所有被代理的对象
     private Map<String, BeanWrapper> beanWrapperMap = new ConcurrentHashMap<>();
+    //保存AopProxy
+    private Map<BeanDefinition,AopProxy> interceptorMap = new HashMap<>();
 
     public ApplicationContext(String... locations){
         this.configLocations = locations;
@@ -114,6 +114,8 @@ public class ApplicationContext extends DefaultListableBeanFactory  implements B
                 BeanWrapper bw = new BeanWrapper(instance);
                 //设置aopProxyConfig
                 bw.setAopConfig(instantiateAopConfig(beanDefinition));
+                //添加将aopProxy的实例添加到map容器中
+                interceptorMap.put(beanDefinition,bw.getAopProxy());
                 //设置通知
                 bw.setBeanPostProcessor(beanPostProcessor);
                 this.beanWrapperMap.put(beanName,bw);
@@ -219,6 +221,10 @@ public class ApplicationContext extends DefaultListableBeanFactory  implements B
     //获取配置文件信息
     public Properties getConfig(){
         return reader.getConfig();
+    }
+
+    public Map<BeanDefinition,AopProxy> getInterceptorMap() {
+        return interceptorMap;
     }
 
     //首字母转为小写

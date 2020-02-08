@@ -21,6 +21,12 @@ public class AopCglibProxy implements AopProxy,MethodInterceptor{
         this.aopProxyConfig = aopConfig;
     }
 
+    @Override
+    public Object proceed(Object proxy, Method method, Object[] args) throws Throwable{
+        //todo cglib方法无法使用
+        return intercept(proxy,method,args,null);
+    }
+
     private Object getInstance(Class<?> clazz){
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);

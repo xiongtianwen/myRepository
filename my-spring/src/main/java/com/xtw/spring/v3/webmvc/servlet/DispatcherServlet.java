@@ -3,11 +3,10 @@ package com.xtw.spring.v3.webmvc.servlet;
 import com.xtw.spring.annotation.Controller;
 import com.xtw.spring.annotation.RequestMapping;
 import com.xtw.spring.annotation.RequestParam;
+import com.xtw.spring.v3.beans.BeanDefinition;
 import com.xtw.spring.v2.webmvc.ModelAndView;
 import com.xtw.spring.v2.webmvc.ViewResolver;
 import com.xtw.spring.v3.aop.AopProxy;
-import com.xtw.spring.v3.aop.AopProxyFactory;
-import com.xtw.spring.v3.aop.AopProxyStrategy;
 import com.xtw.spring.v3.aop.AopProxyUtil;
 import com.xtw.spring.v3.context.ApplicationContext;
 import com.xtw.spring.v3.webmvc.HandlerAdapter;
@@ -40,24 +39,19 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //        System.out.println("======================调用doGet()===================");
+        doPost(req,resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if("/favicon.ico".equals(req.getRequestURI())){
             return ;
         }
         try {
             doDisPatch(req,resp);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             resp.getWriter().write("<font face='verdana' size='5' color='red'>500 Exception,Details:\r\n" + Arrays.toString(e.getStackTrace()).replaceAll("\\[|\\]","").replaceAll("\\s","\r\n") + "</font>");
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            doDisPatch(req,resp);
-        } catch (Exception e) {
-            e.printStackTrace();
-            resp.getWriter().write("500 Exception,Details:\r\n" + Arrays.toString(e.getStackTrace()).replaceAll("\\[|\\]","").replaceAll("\\s","\r\n"));
         }
     }
 
@@ -72,7 +66,7 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
-    protected void initStrategies(ApplicationContext context) {
+    protected void initStrategies(ApplicationContext context) throws Exception{
         initMultipartResolver(context);//文件上传解析,如果请求的类型是multipart,将通过multipartResolver解析
         initLocaleResolver(context);//本地化解析
         initThemeResolver(context);//主题解析
@@ -118,7 +112,7 @@ public class DispatcherServlet extends HttpServlet {
                     //将*替换为.*,将多个/替换为一个/
                     String regex = controllerUrl + methodUrl.replaceAll("\\*",".*").replaceAll("/+","/");
                     Pattern pattern = Pattern.compile(regex);
-                    this.handlerMappings.add(new HandlerMapping(pattern,proxy,method));
+                    this.handlerMappings.add(new HandlerMapping(pattern,controller,method));
                     System.out.println("Mapping:"+handlerMappings.toString());
                 }
             }
@@ -127,16 +121,14 @@ public class DispatcherServlet extends HttpServlet {
         }
 
     }
-    private void initHandlerAdapters(ApplicationContext context) {
+    private void initHandlerAdapters(ApplicationContext context) throws Exception{
         //在初始化阶段,我们能做的就是将这些参数的名称或者类型按一定顺序保存下来
         //因为后面调用的时候,传的形参是一个数组
         //可以通过记录这些参数的位置index,挨个从参数中取值,这样就和参数顺序无关了
 
-        //每一个参数有一个列表,这里保存的是形参列表(参数的value,参数的index)
-        Map<String,Integer> paramMap = new HashMap<>();
-
-
         for(HandlerMapping handlerMapping : handlerMappings){
+            //每一个参数有一个列表,这里保存的是形参列表(参数的value,参数的index)
+            Map<String,Integer> paramMap = new HashMap<>();
             //这里只是处理命名参数(有注解的参数)
             Annotation[][] pa = handlerMapping.getMethod().getParameterAnnotations();
             for(int i = 0; i < pa.length; i++){
@@ -158,7 +150,16 @@ public class DispatcherServlet extends HttpServlet {
                     paramMap.put(type.getName(),i);
                 }
             }
-            handlerAdapterMap.put(handlerMapping,new HandlerAdapter(paramMap));
+
+            Map<BeanDefinition,AopProxy> interceptors = context.getInterceptorMap();
+            AopProxy confirmProxy = null;
+            for(Map.Entry<BeanDefinition,AopProxy> entry: interceptors.entrySet()){
+                    String beanClassName = entry.getKey().getBeanClassName();
+                    if(!beanClassName.equals(handlerMapping.getController().getClass().getName())){continue;}
+                    confirmProxy = entry.getValue();
+                    break;
+            }
+            handlerAdapterMap.put(handlerMapping,new HandlerAdapter(paramMap,confirmProxy));
         }
 
     }
@@ -182,7 +183,7 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
-    private void doDisPatch(HttpServletRequest req, HttpServletResponse resp) throws Exception{
+    private void doDisPatch(HttpServletRequest req, HttpServletResponse resp) throws Throwable{
             HandlerMapping handler = getHandler(req);
             if(handler == null){
                 resp.getWriter().write("404 Not Found;Detail:com.xtw.spring.v2.webmvc.servlet.DispatcherServlet.getHandler");
