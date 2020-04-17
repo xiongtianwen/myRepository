@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtw.tool.tooltable.mapper.MysqlMapper">
+
+
+    <update id="createNewTable" parameterType="com.xtw.tool.tooltable.modal.TableModal">
+        CREATE TABLE ${tableName}(
+        ${pk}
+        <choose>
+            <when test='pkType == "1"'>
+                varchar(36) PRIMARY KEY
+            </when>
+            <otherwise>
+                bigint(20) PRIMARY KEY AUTO_INCREMENT
+            </otherwise>
+        </choose>
+        COMMENT '主键',
+        <foreach collection="list" index="index" item="item"
+                 separator="," >
+            ${item.columnName} ${item.columnType}
+            <if test="item.defaultValue != null and item.defaultValue != ''">
+                DEFAULT ${item.defaultValue}
+            </if>
+            <if test="item.isNull != null and item.isNull != ''">
+                NOT NULL
+            </if>
+            COMMENT '${item.columnNotes}'
+        </foreach>
+          )CHARACTER SET utf8 COLLATE utf8_general_ci
+    </update>
+
+    <update id="dropTable" parameterType="java.lang.String">
+        drop table if exists ${tableName};
+    </update>
+</mapper>
