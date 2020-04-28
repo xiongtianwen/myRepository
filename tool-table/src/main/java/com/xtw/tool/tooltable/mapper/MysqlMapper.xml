@@ -21,9 +21,14 @@
             <if test="item.defaultValue != null and item.defaultValue != ''">
                 DEFAULT ${item.defaultValue}
             </if>
-            <if test="item.isNull != null and item.isNull != ''">
-                NOT NULL
-            </if>
+            <choose>
+                <when test='item.isNull != null and item.isNull != ""  and !"NULL".equals(item.isNull)'>
+                    NOT NULL
+                </when>
+                <when test='"NULL".equals(item.isNull)'>
+                    NULL
+                </when>
+            </choose>
             COMMENT '${item.columnNotes}'
         </foreach>
           )CHARACTER SET utf8 COLLATE utf8_general_ci
